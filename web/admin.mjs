@@ -28,7 +28,7 @@ const SAVE_SETTINGS = `mutation ShopSaveSettings($input: WshopSettingsInput!) {
 const fmt = (host, v, currency) => `${new Intl.NumberFormat(host.locale?.value || undefined, { maximumFractionDigits: 2 }).format(Number(v) || 0)} ${currency || ''}`.trim()
 const errText = (e) => String(e?.message ?? e)
 const field = (label, control, hint) => h('label', { class: 'block space-y-1' }, [
-  h('span', { class: 'text-sm font-medium' }, label), control, hint ? h('span', { class: 'block text-xs text-muted' }, hint) : null,
+  h('span', { class: 'block text-sm font-medium' }, label), h('div', {}, [control]), hint ? h('span', { class: 'block text-xs text-muted' }, hint) : null,
 ])
 
 // ---------------------------------------------------------------- заказы
@@ -273,7 +273,11 @@ const Settings = defineComponent({
     async function save() {
       saving.value = true
       try {
-        const input = { ...form, delivery_price: Number(form.delivery_price) || 0, free_delivery_from: Number(form.free_delivery_from) || 0 }
+        // Поле в поле: форма наполнена ответом сервера с __typename, который в input недопустим.
+        const input = {
+          shop_name: form.shop_name, currency: form.currency, pickup_address: form.pickup_address, payment_note: form.payment_note,
+          delivery_price: Number(form.delivery_price) || 0, free_delivery_from: Number(form.free_delivery_from) || 0,
+        }
         Object.assign(form, (await host.gql(SAVE_SETTINGS, { input })).wshopSaveSettings)
         host.toast(host.t('saved'))
       } catch (e) { host.toast(errText(e), 'error') } finally { saving.value = false }

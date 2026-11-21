@@ -16,7 +16,7 @@ curl -fsSL https://sitebillcms.com/install.sh | sh -s -- --profile blank --apps 
 ```
 
 `--demo` наполняет каталог примером (9 товаров в 3 категориях). Без него магазин пуст — добавьте товары в
-«Админка → Товары». Вручную: `php artisan apps install rumantic.shop-0.1.1.sbapp --shell`.
+«Админка → Товары». Вручную: `php artisan apps install rumantic.shop-0.1.3.sbapp --shell`.
 
 ## Что умеет
 

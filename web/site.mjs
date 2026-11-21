@@ -101,8 +101,10 @@ const ShopHome = defineComponent({
 
     // ---- корзина с актуальными ценами с сервера
     const cartInfo = ref({}) // id → карточка
+    const cartLoading = ref(false)
     async function refreshCart() {
       if (!cart.value.length) { cartInfo.value = {}; return }
+      cartLoading.value = true
       try {
         const data = await host.rest('cart', { method: 'POST', body: { ids: cart.value.map(l => l.id) } })
         cartInfo.value = Object.fromEntries(data.products.map(p => [p.id, p]))
@@ -110,7 +112,7 @@ const ShopHome = defineComponent({
         cart.value = cart.value.filter(l => cartInfo.value[l.id] && cartInfo.value[l.id].max_qty > 0)
           .map(l => ({ ...l, qty: Math.min(l.qty, cartInfo.value[l.id].max_qty) }))
         saveCart()
-      } catch { /* остаёмся на том, что есть */ }
+      } catch { /* остаёмся на том, что есть */ } finally { cartLoading.value = false }
     }
     watch(route, (r) => { if (r.name === 'cart' || r.name === 'checkout') refreshCart() }, { immediate: true })
     const lines = computed(() => cart.value.filter(l => cartInfo.value[l.id]).map(l => ({ ...l, p: cartInfo.value[l.id] })))
@@ -228,7 +230,7 @@ const ShopHome = defineComponent({
       back(host.t('to_catalog'), '#/'),
       h('h1', { class: 'text-xl font-semibold text-highlighted' }, host.t('cart')),
       lines.value.length === 0
-        ? h('p', { class: 'text-muted' }, host.t('cart_empty'))
+        ? h('p', { class: 'text-muted' }, cartLoading.value || cart.value.length ? '…' : host.t('cart_empty'))
         : h('div', { class: 'space-y-4' }, [
             h('div', { class: 'divide-y divide-(--ui-border) rounded-2xl border border-(--ui-border)' }, lines.value.map(l =>
               h('div', { key: l.id, class: 'flex items-center gap-3 p-3' }, [
@@ -261,7 +263,7 @@ const ShopHome = defineComponent({
           h(UButton, { label: host.t('to_catalog'), onClick: () => { order.state = 'idle'; go('#/') } }),
         ])
       }
-      if (lines.value.length === 0) return h('div', { class: 'space-y-3' }, [h('p', { class: 'text-muted' }, host.t('cart_empty')), back(host.t('to_catalog'), '#/')])
+      if (lines.value.length === 0) return h('div', { class: 'space-y-3' }, [h('p', { class: 'text-muted' }, cartLoading.value || cart.value.length ? '…' : host.t('cart_empty')), back(host.t('to_catalog'), '#/')])
       return h('div', { class: 'grid gap-6 md:grid-cols-5' }, [
         h('form', { class: 'space-y-3 md:col-span-3', onSubmit: (e) => { e.preventDefault(); submit() } }, [
           back(host.t('cart'), '#/cart'),
