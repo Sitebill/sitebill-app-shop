@@ -1,0 +1,38 @@
+{
+  "id": "rumantic.shop",
+  "name": { "ru": "Интернет-магазин", "en": "Online store", "sr": "Internet prodavnica", "tg": "Мағозаи интернетӣ" },
+  "version": "0.1.1",
+  "vendor": { "name": "Rumantic", "url": "https://sitebillcms.com/" },
+  "license": "MIT",
+  "repository": "https://github.com/Sitebill/sitebill-app-shop",
+  "description": {
+    "ru": "Классический интернет-магазин: каталог с категориями и поиском, корзина, оформление заказа, учёт остатков, заказы в админке и в CRM.",
+    "en": "A classic online store: catalog with categories and search, cart, checkout, stock tracking, orders in the admin panel and in the CRM.",
+    "sr": "Klasična internet prodavnica: katalog sa kategorijama i pretragom, korpa, poručivanje, praćenje stanja, porudžbine u administraciji i CRM-u.",
+    "tg": "Мағозаи интернетии классикӣ: феҳрист бо категорияҳо ва ҷустуҷӯ, сабад, фармоиш, ҳисоби боқимонда, фармоишҳо дар админка ва CRM."
+  },
+  "sdk": { "php": "1", "web": "1" },
+  "requires": { "host": ">=1.1" },
+  "provider": "SitebillApps\\Rumantic\\Shop\\ShopServiceProvider",
+  "permissions": ["crm.leads.create"],
+  "profiles": ["blank"],
+  "shell": {
+    "mode": "owner",
+    "home": "ShopHome",
+    "adminDashboard": "ShopDashboard",
+    "adminMenu": "replace",
+    "accountMenu": "replace",
+    "publicNav": [{ "label": { "ru": "Каталог", "en": "Catalog", "sr": "Katalog", "tg": "Феҳрист" }, "to": "/" }]
+  },
+  "admin": {
+    "menu": [
+      { "label": { "ru": "Заказы", "en": "Orders", "sr": "Porudžbine", "tg": "Фармоишҳо" }, "icon": "i-lucide-package", "path": "" },
+      { "label": { "ru": "Товары", "en": "Products", "sr": "Proizvodi", "tg": "Маҳсулот" }, "icon": "i-lucide-shirt", "path": "products" },
+      { "label": { "ru": "Категории", "en": "Categories", "sr": "Kategorije", "tg": "Категорияҳо" }, "icon": "i-lucide-folders", "path": "categories" },
+      { "label": { "ru": "Настройки магазина", "en": "Store settings", "sr": "Podešavanja prodavnice", "tg": "Танзимоти мағоза" }, "icon": "i-lucide-settings", "path": "settings" }
+    ],
+    "pages": ["", "products", "categories", "settings"],
+    "widgets": { "admin.dashboard": "ShopDashboard" }
+  },
+  "web": { "admin": "web/admin.mjs", "site": "web/site.mjs" }
+}

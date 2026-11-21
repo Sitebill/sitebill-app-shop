@@ -1,0 +1,136 @@
+"Товар магазина (app rumantic.shop)."
+type WshopProduct {
+    id: ID!
+    category_id: Int
+    title: String!
+    description: String
+    price: Float!
+    old_price: Float
+    sku: String
+    "null — остатки не учитываются"
+    stock: Int
+    images: [String!]!
+    is_active: Boolean!
+    sort: Int!
+}
+
+type WshopCategory {
+    id: ID!
+    title: String!
+    sort: Int!
+    products_count: Int!
+}
+
+type WshopOrderItem {
+    title: String!
+    price: Float!
+    qty: Int!
+}
+
+type WshopOrder {
+    id: ID!
+    number: Int!
+    customer_name: String!
+    phone: String!
+    email: String
+    "pickup | courier"
+    delivery: String!
+    address: String
+    comment: String
+    subtotal: Float!
+    delivery_price: Float!
+    total: Float!
+    "new | paid | shipped | done | cancelled"
+    status: String!
+    "Лид в CRM сайта."
+    lead_id: Int
+    created_at: String!
+    items: [WshopOrderItem!]!
+}
+
+type WshopStats {
+    new_orders: Int!
+    total_orders: Int!
+    revenue: Float!
+    products: Int!
+    out_of_stock: Int!
+}
+
+type WshopSettings {
+    shop_name: String!
+    currency: String!
+    delivery_price: Float!
+    free_delivery_from: Float!
+    pickup_address: String!
+    payment_note: String!
+}
+
+input WshopProductInput {
+    category_id: Int
+    title: String! @rules(apply: ["required", "max:200"])
+    description: String @rules(apply: ["nullable", "max:10000"])
+    price: Float! @rules(apply: ["numeric", "min:0", "max:100000000"])
+    old_price: Float @rules(apply: ["nullable", "numeric", "min:0", "max:100000000"])
+    sku: String @rules(apply: ["nullable", "max:60"])
+    stock: Int @rules(apply: ["nullable", "integer", "min:0", "max:10000000"])
+    images: [String!]
+    is_active: Boolean
+    sort: Int
+}
+
+input WshopSettingsInput {
+    shop_name: String @rules(apply: ["nullable", "max:80"])
+    currency: String @rules(apply: ["nullable", "max:8"])
+    delivery_price: Float @rules(apply: ["nullable", "numeric", "min:0"])
+    free_delivery_from: Float @rules(apply: ["nullable", "numeric", "min:0"])
+    pickup_address: String @rules(apply: ["nullable", "max:300"])
+    payment_note: String @rules(apply: ["nullable", "max:1000"])
+}
+
+extend type Query {
+    wshopProducts(q: String, limit: Int = 200): [WshopProduct!]!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@products")
+
+    wshopCategories: [WshopCategory!]!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@categories")
+
+    wshopOrders(status: String @rules(apply: ["nullable", "in:new,paid,shipped,done,cancelled"]), limit: Int = 100): [WshopOrder!]!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@orders")
+
+    wshopStats: WshopStats!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@stats")
+
+    wshopSettings: WshopSettings!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@settings")
+}
+
+extend type Mutation {
+    wshopSaveProduct(id: ID, input: WshopProductInput!): WshopProduct!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@saveProduct")
+
+    wshopDeleteProduct(id: ID!): Boolean!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@deleteProduct")
+
+    wshopSaveCategory(id: ID, title: String! @rules(apply: ["required", "max:150"]), sort: Int): WshopCategory!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@saveCategory")
+
+    wshopDeleteCategory(id: ID!): Boolean!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@deleteCategory")
+
+    wshopSetOrderStatus(id: ID!, status: String! @rules(apply: ["in:new,paid,shipped,done,cancelled"])): WshopOrder!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@setOrderStatus")
+
+    wshopSaveSettings(input: WshopSettingsInput!): WshopSettings!
+        @guard @can(ability: "admin", model: "Tenant")
+        @field(resolver: "SitebillApps\\Rumantic\\Shop\\GraphQL\\ShopResolver@saveSettings")
+}

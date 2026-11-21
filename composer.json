@@ -1,0 +1,14 @@
+{
+    "name": "rumantic/sitebill-app-shop",
+    "description": "Classic online store for Sitebill: catalog, cart, checkout, orders, stock. Orders go to the CRM and notify managers.",
+    "type": "project",
+    "license": "MIT",
+    "homepage": "https://sitebillcms.com/",
+    "keywords": ["sitebill", "shop", "e-commerce", "store", "catalog", "cart", "orders", "app"],
+    "require": { "php": ">=8.4" },
+    "require-dev": { "sitebill/app-sdk": "dev-main" },
+    "repositories": [ { "type": "vcs", "url": "https://github.com/Sitebill/sitebill-app-sdk" } ],
+    "autoload": { "psr-4": { "SitebillApps\\Rumantic\\Shop\\": "api/src/" } },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
