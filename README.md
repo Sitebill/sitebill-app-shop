@@ -4,8 +4,17 @@
 карточка товара, корзина, оформление заказа, учёт остатков, заказы в админке. Каждый заказ создаёт лид в CRM сайта и
 уведомляет менеджеров (колокольчик / e-mail / Telegram / Max — как настроил каждый администратор).
 
-> EN: A classic online store for Sitebill Community: catalog, categories, search, cart, checkout, stock tracking,
-> orders in the admin panel and the CRM. MIT license.
+**Open-source интернет-магазин на своём сервере**: без комиссий и подписки, с CRM и уведомлениями менеджерам. Бесплатная self-hosted альтернатива Shopify, Tilda и InSales для небольшого магазина.
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) ![Sitebill Community app](https://img.shields.io/badge/Sitebill-Community%20app-blue)
+
+> **EN:** An open-source, self-hosted online store (e-commerce) app for [Sitebill Community](https://sitebillcms.com/):
+> product catalog with categories and search, shopping cart, checkout, stock tracking, orders with statuses in the
+> admin panel, every order creates a CRM lead. Laravel + GraphQL backend, Vue/Nuxt storefront, 4 languages
+> (ru, en, sr, tg). A free Shopify alternative. MIT license.
+
+Подходит, если нужны: интернет-магазин с каталогом и корзиной, приём заказов с учётом остатков, магазин на собственном
+хостинге, витрина с заказами сразу в CRM.
 
 ## Установка
 
@@ -16,7 +25,7 @@ curl -fsSL https://sitebillcms.com/install.sh | sh -s -- --profile blank --apps 
 ```
 
 `--demo` наполняет каталог примером (9 товаров в 3 категориях). Без него магазин пуст — добавьте товары в
-«Админка → Товары». Вручную: `php artisan apps install rumantic.shop-0.1.3.sbapp --shell`.
+«Админка → Товары». Вручную: `php artisan apps install rumantic.shop-<версия>.sbapp --shell` (или `php artisan apps install rumantic.shop` из каталога).
 
 ## Что умеет
 
